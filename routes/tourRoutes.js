@@ -1,5 +1,5 @@
 const express = require('express');
-
+const authControler = require('../controllers/authControler');
 const router = express.Router();
 const toursControler = require('../controllers/tourControler');
 
@@ -12,7 +12,7 @@ router
 // GET ALL TOURS AND POST NEW TOUR
 router
   .route('/')
-  .get(toursControler.getAllTours)
+  .get(authControler.protect, toursControler.getAllTours)
   .post(toursControler.createTour);
 // GET SINGLE TOUR , UPDATE AND DELETE TOUR
 router
