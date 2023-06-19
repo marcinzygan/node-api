@@ -1,3 +1,4 @@
+/* eslint-disable arrow-body-style */
 const crypto = require('crypto');
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
@@ -15,7 +16,17 @@ const signToken = (id) => {
     { expiresIn: process.env.JWT_EXPIRES_IN }
   );
 };
+const createSendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
 
+  res.status(statusCode).json({
+    statsu: 'success',
+    token,
+    data: {
+      user: user,
+    },
+  });
+};
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -25,16 +36,16 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordChangedAt: req.body.passwordChangedAt,
     role: req.body.role,
   });
+  createSendToken(newUser, 201, res);
+  // const token = signToken(newUser._id);
 
-  const token = signToken(newUser._id);
-
-  res.status(201).json({
-    statsu: 'success',
-    token,
-    data: {
-      user: newUser,
-    },
-  });
+  // res.status(201).json({
+  //   statsu: 'success',
+  //   token,
+  //   data: {
+  //     user: newUser,
+  //   },
+  // });
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -53,11 +64,12 @@ exports.login = catchAsync(async (req, res, next) => {
   }
   // 3 I all good send token to Client
   console.log(user._id);
-  const token = signToken(user._id);
-  res.status(200).json({
-    status: 'success',
-    token: token,
-  });
+  createSendToken(user, 200, res);
+  // const token = signToken(user._id);
+  // res.status(200).json({
+  //   status: 'success',
+  //   token: token,
+  // });
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -160,10 +172,30 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   user.passwordResetExpires = undefined;
   await user.save();
   //3 Updat ChangePasswordAt property
-  const token = signToken(user._id);
-  res.status(200).json({
-    status: 'success',
-    token: token,
-  });
+  createSendToken(user, 200, res);
+  // const token = signToken(user._id);
+  // res.status(200).json({
+  //   status: 'success',
+  //   token: token,
+  // });
   //4 Log the user in send JWT
+});
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  //1 Get user from collection
+  const user = await User.findById(req.user.id).select('+password');
+  //2 Check if posted password is correct
+  if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
+    return next(new AppError('Your current password is incorrect', 401));
+  }
+  //3 If password is correct , update password
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  await user.save();
+  //4 Log user in , send JWT
+  createSendToken(user, 200, res);
+  // const token = signToken(user._id);
+  // res.status(200).json({
+  //   status: 'success',
+  //   token: token,
+  // });
 });

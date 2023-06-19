@@ -8,6 +8,9 @@ router.route('/signup').post(authControler.signup);
 router.route('/login').post(authControler.login);
 router.route('/forgotPassword').post(authControler.forgotPassword);
 router.route('/resetPassword/:token').patch(authControler.resetPassword);
+router
+  .route('/updateMyPassword')
+  .patch(authControler.protect, authControler.updatePassword);
 router.route('/').get(UserControler.getAllUsers).post(UserControler.createUser);
 router
   .route('/:id')
