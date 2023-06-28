@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
+const hpp = require('hpp');
 const tourRouter = require('./routes/tourRoutes');
 const usersRouter = require('./routes/userRoutes');
 const AppError = require('./utils/appError');
@@ -32,6 +33,20 @@ app.use(express.json());
 app.use(mongoSanitize());
 //Data sanitization against XSS (CROSS SITE SCRIPTING) attacks
 app.use(xss());
+
+//Prevent parapeter polution
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'ratingsQuantity',
+      'ratingsAverage',
+      'maxGroupSize',
+      'difficulty',
+      'price',
+    ],
+  })
+);
 //Servig static files
 app.use(express.static(`${__dirname}/public`));
 // Test middleware
