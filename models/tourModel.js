@@ -135,6 +135,11 @@ tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
   next();
 });
+//POPULATE CHILD REFRENCING
+tourSchema.pre(/^find/, function (next) {
+  this.populate({ path: 'guides', select: '-__v -password' });
+  next();
+});
 // tourSchema.post(/^find/, function (docs, next) {
 //   console.log(docs);
 //   next();
