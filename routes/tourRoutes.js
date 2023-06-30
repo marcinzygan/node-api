@@ -2,7 +2,13 @@ const express = require('express');
 const authControler = require('../controllers/authControler');
 const router = express.Router();
 const toursControler = require('../controllers/tourControler');
-const reviewControler = require('../controllers/reviewControler');
+const reviewRouter = require('../routes/reviewRoutes');
+//NESTED ROUTES
+//POST /tour/2332gd/reviews
+//GET /tour/2332gd/reviews
+// redirect to reviewRouter
+router.use('/:tourId/reviews', reviewRouter);
+
 // router.param('id', toursControler.checkID);
 router.route('/stats').get(toursControler.getTourStats);
 router.route('/monthly-stats/:year').get(toursControler.getMonthlyPlan);
@@ -25,16 +31,4 @@ router
     toursControler.deleteTour
   );
 
-//NESTED ROUTES
-//POST /tour/2332gd/reviews
-//GET /tour/2332gd/reviews
-//GET /tour/2332gd/reviews/43252fff
-
-router
-  .route('/:tourId/reviews')
-  .post(
-    authControler.protect,
-    authControler.restrictTo('user'),
-    reviewControler.createReview
-  );
 module.exports = router;

@@ -1,7 +1,11 @@
 const express = require('express');
-const router = express.Router();
+//Params merged to get id from "tours/:tourId/reviews"
+const router = express.Router({ mergeParams: true });
 const authControler = require('../controllers/authControler');
 const reviewControler = require('../controllers/reviewControler');
+
+//POST /tour/234fws3/reviews
+//POST /reviews
 
 router
   .route('/')
