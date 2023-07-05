@@ -1,7 +1,9 @@
 const express = require('express');
+// eslint-disable-next-line import/newline-after-import
 const authControler = require('../controllers/authControler');
 const router = express.Router();
 const toursControler = require('../controllers/tourControler');
+// eslint-disable-next-line import/no-useless-path-segments
 const reviewRouter = require('../routes/reviewRoutes');
 //NESTED ROUTES
 //POST /tour/2332gd/reviews
