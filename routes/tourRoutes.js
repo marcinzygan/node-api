@@ -2,6 +2,12 @@ const express = require('express');
 const authControler = require('../controllers/authControler');
 const router = express.Router();
 const toursControler = require('../controllers/tourControler');
+const reviewRouter = require('../routes/reviewRoutes');
+//NESTED ROUTES
+//POST /tour/2332gd/reviews
+//GET /tour/2332gd/reviews
+// redirect to reviewRouter
+router.use('/:tourId/reviews', reviewRouter);
 
 // router.param('id', toursControler.checkID);
 router.route('/stats').get(toursControler.getTourStats);
