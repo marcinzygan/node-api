@@ -35,7 +35,7 @@ app.use(mongoSanitize());
 //Data sanitization against XSS (CROSS SITE SCRIPTING) attacks
 app.use(xss());
 
-//Prevent parapeter polution
+//Prevent parameter polution
 app.use(
   hpp({
     whitelist: [
