@@ -20,13 +20,21 @@ router
 // GET ALL TOURS AND POST NEW TOUR
 router
   .route('/')
-  .get(authControler.protect, toursControler.getAllTours)
-  .post(toursControler.createTour);
+  .get(toursControler.getAllTours)
+  .post(
+    authControler.protect,
+    authControler.restrictTo('admin', 'lead-guide'),
+    toursControler.createTour
+  );
 // GET SINGLE TOUR , UPDATE AND DELETE TOUR
 router
   .route('/:id')
   .get(toursControler.getSingleTour)
-  .patch(toursControler.updateTour)
+  .patch(
+    authControler.protect,
+    authControler.restrictTo('admin', 'lead-guide'),
+    toursControler.updateTour
+  )
   .delete(
     authControler.protect,
     authControler.restrictTo('admin', 'lead-guide'),
